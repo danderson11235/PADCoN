@@ -3,26 +3,37 @@
 #include <cmath>
 #include <stdlib.h>
 #include <time.h>
+#include <stdlib.h>
 
 
 PiMontecarlo::PiMontecarlo() {
     srand(time(NULL));
 }
 
-int PiMontecarlo::exec(int threadCount) {
+float PiMontecarlo::exec(int threadCount=3) {
     float pi = M_PI;
-    float* res = new float[threadCount];
+    // float* res = new float[threadCount]{0};
+    float res[3] = {0};
     std::vector<std::thread> th;
+    // for (int i = 0; i < threadCount; i++) {
+    //     float temp = 0;
+    //     std::thread t(&PiMontecarlo::calculatePi, this, 1000, &temp);
+    //     res[i] = temp;
+    //     th.push_back(t);
+    // }
+    // for (auto& t:th) {
+    //     t.join();
+    // }
+    std::thread t1(calculatePi, this, 100, res[0]);
+    float resAvg = 0;
     for (int i = 0; i < threadCount; i++) {
-        th.emplace_back(calculatePi, 10, res[i]);
+        resAvg += res[i];
     }
-    for (auto& t:th) {
-        t.join();
-    }
-    return 0;
+    resAvg = resAvg / threadCount;
+    return resAvg;
 }
 
-void PiMontecarlo::calculatePi(int count, float* res) {
+void PiMontecarlo::calculatePi(int count, float* res){
     int numInCircle = 0;
     for (int i = 0; i < count; i ++) {
         float a = ((float)rand()) / (float) RAND_MAX;
@@ -31,3 +42,13 @@ void PiMontecarlo::calculatePi(int count, float* res) {
     }
     *res = (float)(4 * count / numInCircle);
 }
+
+// void PiMontecarlo::operator()(int count, float *res) {
+//     int numInCircle = 0;
+//     for (int i = 0; i < count; i ++) {
+//         float a = ((float)rand()) / (float) RAND_MAX;
+//         float b = ((float)rand()) / (float) RAND_MAX;
+//         if (sqrt((a*a) + (b*b)) < 1) numInCircle++;
+//     }
+//     *res = (float)(4 * count / numInCircle);
+// }

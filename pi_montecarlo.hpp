@@ -6,7 +6,9 @@ public:
     PiMontecarlo();
     ~PiMontecarlo();
 
-    int exec(int threadCount);
+    float exec(int threadCount);
+    // void operator()(int count, float *res);
 private:
-    void calculatePi(int count);
+
+    void calculatePi(int count, float *res);
 };
