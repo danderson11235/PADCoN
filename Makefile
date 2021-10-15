@@ -1,5 +1,12 @@
 pithread=pi_montecarlo
 proj=driver
+std=base
+
 all:
-	gcc -c $(pithread).cpp $(driver).cpp
-	gcc -o driver -g $(pithread).cpp $(driver).cpp
+	g++ -c $(pithread).cpp $(proj).cpp
+	g++ -o driver -g -pthread $(pithread).o $(proj).o
+driver:
+	g++ -c $(std).cpp
+	g++ -o $(proj) -g -pthread $(std).o
+clean:
+	rm *.o

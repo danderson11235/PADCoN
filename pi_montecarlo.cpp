@@ -24,7 +24,7 @@ float PiMontecarlo::exec(int threadCount=3) {
     // for (auto& t:th) {
     //     t.join();
     // }
-    std::thread t1(calculatePi, this, 100, res[0]);
+    std::thread t1(&PiMontecarlo::calculatePi, this, 100, std::ref(res[0]));
     float resAvg = 0;
     for (int i = 0; i < threadCount; i++) {
         resAvg += res[i];
@@ -33,14 +33,14 @@ float PiMontecarlo::exec(int threadCount=3) {
     return resAvg;
 }
 
-void PiMontecarlo::calculatePi(int count, float* res){
+void PiMontecarlo::calculatePi(int count, float& res){
     int numInCircle = 0;
     for (int i = 0; i < count; i ++) {
         float a = ((float)rand()) / (float) RAND_MAX;
         float b = ((float)rand()) / (float) RAND_MAX;
         if (sqrt((a*a) + (b*b)) < 1) numInCircle++;
     }
-    *res = (float)(4 * count / numInCircle);
+    res = (float)(4 * count / numInCircle);
 }
 
 // void PiMontecarlo::operator()(int count, float *res) {
